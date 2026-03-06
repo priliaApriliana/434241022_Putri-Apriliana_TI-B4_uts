@@ -1,0 +1,47 @@
+// lib/core/constants/app_constants.dart
+import 'package:flutter/material.dart';
+
+class AppConstants {
+  // App Info
+  static const String appName = 'Dashboard Mahasiswa D4TI';
+  static const String appVersion = '1.0.0';
+
+  // Keys
+  static const String userPrefsKey = 'user_prefs';
+
+  // Spacing
+  static const double paddingSmall = 8.0;
+  static const double paddingMedium = 16.0;
+  static const double paddingLarge = 24.0;
+
+  // Border Radius
+  static const double radiusSmall = 8.0;
+  static const double radiusMedium = 12.0;
+  static const double radiusLarge = 16.0;
+
+  // Dashboard Gradient Colors
+  // Color tidak bisa const, jadi pakai static final
+  static final List<List<Color>> dashboardGradients = [
+    [Color(0xFF667eea), Color(0xFF764ba2)], // Purple
+    [Color(0xFFf093fb), Color(0xFFf5576c)], // Pink
+    [Color(0xFF4facfe), Color(0xFF00f2fe)], // Blue
+    [Color(0xFF43e97b), Color(0xFF38f9d7)], // Green
+  ];
+
+  static final List<Color> gradientPurple = [
+    Color(0xFF667eea),
+    Color(0xFF764ba2),
+  ];
+  static final List<Color> gradientPink = [
+    Color(0xFFf093fb),
+    Color(0xFFf5576c),
+  ];
+  static final List<Color> gradientBlue = [
+    Color(0xFF4facfe),
+    Color(0xFF00f2fe),
+  ];
+  static final List<Color> gradientGreen = [
+    Color(0xFF43e97b),
+    Color(0xFF38f9d7),
+  ];
+}
