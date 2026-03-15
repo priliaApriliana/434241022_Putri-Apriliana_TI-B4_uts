@@ -1,31 +1,19 @@
+import 'package:dio/dio.dart';
 import 'package:app_mobile/features/dosen/data/models/dosen_model.dart';
 
 class DosenRepository {
+  final Dio _dio = Dio(BaseOptions(
+    baseUrl: 'https://jsonplaceholder.typicode.com',
+    headers: {'Accept': 'application/json'},
+  ));
+
   Future<List<DosenModel>> getDosenList() async {
-    // Simsimulasi delay network
-    await Future.delayed(const Duration(seconds: 1));
-
-    // Data dummy dosen
-    return [
-      DosenModel(
-        nama: 'Dr. Andi Wijaya',
-        nip: '123456789',
-        email: 'andi.wijaya@example.com',
-        jurusan: 'Teknik Informatika',
-      ),
-        DosenModel(
-            nama: 'Dr. Siti Nurhaliza',
-            nip: '987654321',
-            email: 'siti.nurhaliza@example.com',
-            jurusan: 'Manajemen',
-        ),
-
-        DosenModel(
-            nama: 'Dr. Budi Santoso',
-            nip: '456789123',
-            email: 'budi.santoso@example.com',
-            jurusan: 'Sistem Informasi',
-        ),
-    ];
+    try {
+      final response = await _dio.get('/users');
+      final List<dynamic> data = response.data;
+      return data.map((json) => DosenModel.fromJson(json)).toList();
+    } on DioException catch (e) {
+      throw Exception('DioError: ${e.message}');
+    }
   }
 }

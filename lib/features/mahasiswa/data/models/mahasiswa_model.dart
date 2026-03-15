@@ -1,35 +1,35 @@
 class MahasiswaModel {
-  final String nama;
-  final String nim;
+  final int id;
+  final int postId;
+  final String name;
   final String email;
-  final String jurusan;
-  final String semester;
+  final String body;
 
   MahasiswaModel({
-    required this.nama,
-    required this.nim,
+    required this.id,
+    required this.postId,
+    required this.name,
     required this.email,
-    required this.jurusan,
-    required this.semester,
+    required this.body,
   });
 
   factory MahasiswaModel.fromJson(Map<String, dynamic> json) {
     return MahasiswaModel(
-      nama: json['nama'] ?? '',
-      nim: json['nim'] ?? '',
+      id: json['id'] ?? 0,
+      postId: json['postId'] ?? 0,
+      name: json['name'] ?? '',
       email: json['email'] ?? '',
-      jurusan: json['jurusan'] ?? '',
-      semester: json['semester'] ?? '',
+      body: json['body'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'nama': nama,
-      'nim': nim,
+      'id': id,
+      'postId': postId,
+      'name': name,
       'email': email,
-      'jurusan': jurusan,
-      'semester': semester,
+      'body': body,
     };
   }
 }

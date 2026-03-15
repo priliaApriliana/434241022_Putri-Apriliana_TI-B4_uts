@@ -1,43 +1,40 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:app_mobile/features/dosen/data/models/dosen_model.dart';
-import 'package:app_mobile/features/dosen/data/repositories/dosen_repository.dart';
+import 'package:app_mobile/features/profile/data/models/profile_model.dart';
+import 'package:app_mobile/features/profile/data/repositories/profile_repository.dart';
 
 // Repository Provider
-final dosenRepositoryProvider = Provider<DosenRepository>((ref) {
-  return DosenRepository();
-}); // Provider
+final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
+  return ProfileRepository();
+});
 
-// StateNotifier untuk mengelola state dosen
-class DosenNotifier extends StateNotifier<AsyncValue<List<DosenModel>>> {
-  final DosenRepository _repository;
+// StateNotifier untuk mengelola state profile
+class ProfileNotifier extends StateNotifier<AsyncValue<ProfileModel>> {
+  final ProfileRepository _repository;
 
-  DosenNotifier(this._repository) : super(const AsyncValue.loading()) {
-    loadDosenList();
+  ProfileNotifier(this._repository) : super(const AsyncValue.loading()) {
+    loadProfile();
   }
 
-  /// Load data dosen dalam bentuk list
-  Future<void> loadDosenList() async {
+  Future<void> loadProfile() async {
     state = const AsyncValue.loading();
     try {
-      final data = await _repository.getDosenList();
+      final data = await _repository.getProfile();
       state = AsyncValue.data(data);
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
     }
   }
 
-  /// Refresh data dosen dalam bentuk list
   Future<void> refresh() async {
-    await loadDosenList();
+    await loadProfile();
   }
 }
 
-// Dosen Notifier Provider
-final dosenNotifierProvider =
-    StateNotifierProvider.autoDispose<
-      DosenNotifier,
-      AsyncValue<List<DosenModel>>
-    >((ref) {
-      final repository = ref.watch(dosenRepositoryProvider);
-      return DosenNotifier(repository);
-    });
+// Profile Notifier Provider
+final profileNotifierProvider =
+    StateNotifierProvider.autoDispose<ProfileNotifier, AsyncValue<ProfileModel>>(
+  (ref) {
+    final repository = ref.watch(profileRepositoryProvider);
+    return ProfileNotifier(repository);
+  },
+);

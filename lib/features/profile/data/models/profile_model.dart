@@ -1,31 +1,31 @@
-class DosenModel {
-  final String nama;
-  final String nip;
+class ProfileModel {
+  final String name;
   final String email;
-  final String jurusan;
+  final String phone;
+  final String address;
 
-  DosenModel({
-    required this.nama,
-    required this.nip,
+  ProfileModel({
+    required this.name,
     required this.email,
-    required this.jurusan,
+    required this.phone,
+    required this.address,
   });
 
-  factory DosenModel.fromJson(Map<String, dynamic> json) {
-    return DosenModel(
-      nama: json['nama'] ?? '',
-      nip: json['nip'] ?? '',
+  factory ProfileModel.fromJson(Map<String, dynamic> json) {
+    return ProfileModel(
+      name: json['name'] ?? '',
       email: json['email'] ?? '',
-      jurusan: json['jurusan'] ?? '',
+      phone: json['phone'] ?? '',
+      address: json['address'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'nama': nama,
-      'nip': nip,
+      'name': name,
       'email': email,
-      'jurusan': jurusan,
+      'phone': phone,
+      'address': address,
     };
   }
 }
