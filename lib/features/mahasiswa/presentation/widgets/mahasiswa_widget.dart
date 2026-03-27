@@ -344,7 +344,7 @@ class _ModernMahasiswaCardState extends State<ModernMahasiswaCard>
                       const SizedBox(height: 8),
                       _buildInfoRow(
                         Icons.numbers_outlined,
-                        'Post ID: ${widget.mahasiswa.postId}',
+                        'Post ID: ${widget.mahasiswa.username}',
                       ),
                       const SizedBox(height: 4),
                       _buildInfoRow(
@@ -354,7 +354,7 @@ class _ModernMahasiswaCardState extends State<ModernMahasiswaCard>
                       const SizedBox(height: 4),
                       _buildInfoRow(
                         Icons.comment_outlined,
-                        widget.mahasiswa.body,
+                        widget.mahasiswa.email,
                       ),
                     ],
                   ),

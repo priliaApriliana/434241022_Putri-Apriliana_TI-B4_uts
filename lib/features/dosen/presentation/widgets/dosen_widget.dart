@@ -144,7 +144,7 @@ class _ModernDosenCardState extends State<ModernDosenCard>
                       const SizedBox(height: 4),
                       _buildInfoRow(
                         Icons.location_on_outlined,
-                        '${widget.dosen.address.street}, ${widget.dosen.address.city}',
+                        '${widget.dosen.address.city}, ${widget.dosen.address.city}',
                       ),
                     ],
                   ),
@@ -243,7 +243,7 @@ class DosenCard extends StatelessWidget {
                       style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                     ),
                     Text(
-                      '${dosen.address.street}, ${dosen.address.city}',
+                      '${dosen.address.city}, ${dosen.address.city}',
                       style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
