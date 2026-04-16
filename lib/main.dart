@@ -1,27 +1,38 @@
-import 'package:app_mobile/core/constants/constants.dart';
-import 'package:app_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:app_mobile/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'app/data/services/auth_service.dart';
+import 'app/data/services/ticket_service.dart';
+import 'app/routes/app_pages.dart';
+import 'app/routes/app_routes.dart';
+import 'app/theme/app_theme.dart';
 
-void main() {
-  // runApp(const MyApp());
-  runApp(const ProviderScope(child: MyApp()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
+
+  timeago.setLocaleMessages('id', timeago.IdMessages());
+
+  Get.put(AuthService(), permanent: true);
+  Get.put(TicketService(), permanent: true);
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppConstants.appName,
+    return GetMaterialApp(
+      title: 'E-Ticketing Helpdesk',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light,
-      home: const DashboardPage(),
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: ThemeMode.system,
+      initialRoute: Routes.splash,
+      getPages: AppPages.pages,
     );
   }
 }
