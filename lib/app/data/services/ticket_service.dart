@@ -34,8 +34,8 @@ class TicketService extends GetxService {
       category: 'Network',
       createdBy: '3',
       createdByName: 'Andi User',
-      assignedTo: '2',
-      assignedToName: 'Siti Helpdesk',
+      assignedTo: '4',
+      assignedToName: 'Rizky Technical Support',
       attachments: [],
       createdAt: DateTime.now().subtract(const Duration(days: 1)),
       updatedAt: DateTime.now().subtract(const Duration(hours: 2)),
@@ -46,13 +46,13 @@ class TicketService extends GetxService {
       title: 'Software akuntansi error',
       description:
           'Aplikasi akuntansi menampilkan error saat login dengan kode ERR_DB_CONN. Sudah dicoba restart tapi tidak membantu.',
-      status: 'resolved',
+      status: 'closed',
       priority: 'high',
       category: 'Software',
       createdBy: '3',
       createdByName: 'Andi User',
-      assignedTo: '2',
-      assignedToName: 'Siti Helpdesk',
+      assignedTo: '5',
+      assignedToName: 'Nina Technical Support',
       attachments: [],
       createdAt: DateTime.now().subtract(const Duration(days: 3)),
       updatedAt: DateTime.now().subtract(const Duration(days: 1)),
@@ -124,7 +124,8 @@ class TicketService extends GetxService {
         if (value is List) {
           _comments[key.toString()] = value
               .map(
-                (item) => CommentModel.fromJson(Map<String, dynamic>.from(item)),
+                (item) =>
+                    CommentModel.fromJson(Map<String, dynamic>.from(item)),
               )
               .toList();
         }
@@ -138,7 +139,9 @@ class TicketService extends GetxService {
     _box.write(_ticketsKey, _tickets.map((ticket) => ticket.toJson()).toList());
     final encodedComments = <String, dynamic>{};
     _comments.forEach((ticketId, values) {
-      encodedComments[ticketId] = values.map((comment) => comment.toJson()).toList();
+      encodedComments[ticketId] = values
+          .map((comment) => comment.toJson())
+          .toList();
     });
     _box.write(_commentsKey, encodedComments);
   }
@@ -246,13 +249,38 @@ class TicketService extends GetxService {
       id: old.id,
       title: old.title,
       description: old.description,
-      status: old.status == 'open' ? 'in_progress' : old.status,
+      status: 'in_progress',
       priority: old.priority,
       category: old.category,
       createdBy: old.createdBy,
       createdByName: old.createdByName,
       assignedTo: assignedTo,
       assignedToName: assignedToName,
+      attachments: old.attachments,
+      createdAt: old.createdAt,
+      updatedAt: DateTime.now(),
+      commentCount: old.commentCount,
+    );
+    _savePersistedData();
+    return true;
+  }
+
+  Future<bool> unassignTicket(String ticketId) async {
+    final index = _tickets.indexWhere((ticket) => ticket.id == ticketId);
+    if (index == -1) return false;
+
+    final old = _tickets[index];
+    _tickets[index] = TicketModel(
+      id: old.id,
+      title: old.title,
+      description: old.description,
+      status: 'open',
+      priority: old.priority,
+      category: old.category,
+      createdBy: old.createdBy,
+      createdByName: old.createdByName,
+      assignedTo: null,
+      assignedToName: null,
       attachments: old.attachments,
       createdAt: old.createdAt,
       updatedAt: DateTime.now(),
@@ -299,7 +327,9 @@ class TicketService extends GetxService {
     return {
       'total': tickets.length,
       'open': tickets.where((ticket) => ticket.status == 'open').length,
-      'in_progress': tickets.where((ticket) => ticket.status == 'in_progress').length,
+      'in_progress': tickets
+          .where((ticket) => ticket.status == 'in_progress')
+          .length,
       'resolved': tickets.where((ticket) => ticket.status == 'resolved').length,
       'closed': tickets.where((ticket) => ticket.status == 'closed').length,
     };

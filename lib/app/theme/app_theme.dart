@@ -47,7 +47,10 @@ class AppTheme {
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: primaryColor, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -104,7 +107,10 @@ class AppTheme {
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: primaryColor, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -120,33 +126,46 @@ class AppTheme {
     );
   }
 
-  // Helper: warna badge status tiket
   static Color statusColor(String status) {
     switch (status) {
-      case 'open': return const Color(0xFF2563EB);
-      case 'in_progress': return const Color(0xFFD97706);
-      case 'resolved': return const Color(0xFF16A34A);
-      case 'closed': return const Color(0xFF64748B);
-      default: return const Color(0xFF64748B);
+      case 'open':
+        return const Color(0xFF2563EB);
+      case 'in_progress':
+        return const Color(0xFFD97706);
+      case 'resolved':
+        return const Color(0xFF16A34A);
+      case 'closed':
+        return const Color(0xFF64748B);
+      default:
+        return const Color(0xFF64748B);
     }
   }
 
   static Color priorityColor(String priority) {
     switch (priority) {
-      case 'high': return const Color(0xFFDC2626);
-      case 'medium': return const Color(0xFFD97706);
-      case 'low': return const Color(0xFF16A34A);
-      default: return const Color(0xFF64748B);
+      case 'high':
+        return const Color(0xFFDC2626);
+      case 'medium':
+        return const Color(0xFFD97706);
+      case 'low':
+        return const Color(0xFF16A34A);
+      default:
+        return const Color(0xFF64748B);
     }
   }
 
   static String statusLabel(String status) {
     switch (status) {
-      case 'open': return 'Open';
-      case 'in_progress': return 'In Progress';
-      case 'resolved': return 'Resolved';
-      case 'closed': return 'Closed';
-      default: return status;
+      case 'open':
+        return 'Menunggu Helpdesk';
+      case 'in_progress':
+        return 'Diproses';
+      case 'resolved':
+        return 'Selesai Teknis';
+      case 'closed':
+        return 'Selesai';
+      default:
+        return status;
     }
   }
 }

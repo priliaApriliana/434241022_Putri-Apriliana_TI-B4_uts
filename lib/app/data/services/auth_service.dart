@@ -25,9 +25,33 @@ class AuthService extends GetxService {
       'avatar': null,
     },
     {
+      'id': '4',
+      'name': 'Rizky Technical Support',
+      'email': 'ts1@test.com',
+      'password': '123456',
+      'role': 'technical_support',
+      'avatar': null,
+    },
+    {
+      'id': '5',
+      'name': 'Nina Technical Support',
+      'email': 'ts2@test.com',
+      'password': '123456',
+      'role': 'technical_support',
+      'avatar': null,
+    },
+    {
       'id': '3',
       'name': 'Andi User',
       'email': 'user@test.com',
+      'password': '123456',
+      'role': 'user',
+      'avatar': null,
+    },
+        {
+      'id': '6',
+      'name': 'Putri User',
+      'email': 'putri@test.com',
       'password': '123456',
       'role': 'user',
       'avatar': null,
@@ -43,17 +67,33 @@ class AuthService extends GetxService {
   void _loadUser() {
     final userData = _box.read('user');
     if (userData != null) {
-      currentUser.value = UserModel.fromJson(Map<String, dynamic>.from(userData));
+      currentUser.value = UserModel.fromJson(
+        Map<String, dynamic>.from(userData),
+      );
     }
   }
 
   bool get isLoggedIn => currentUser.value != null;
 
-  List<UserModel> get assignableUsers {
+  List<UserModel> get technicalSupportUsers {
     return _mockUsers
-        .where((user) => user['role'] == 'helpdesk' || user['role'] == 'admin')
+        .where((user) => user['role'] == 'technical_support')
         .map((user) => UserModel.fromJson(Map<String, dynamic>.from(user)))
         .toList();
+  }
+
+  List<UserModel> get assignableUsers => technicalSupportUsers;
+
+  UserModel? findUserById(String id) {
+    final user = _mockUsers.firstWhereOrNull((item) => item['id'] == id);
+    if (user == null) return null;
+    return UserModel.fromJson(Map<String, dynamic>.from(user));
+  }
+
+  bool isTechnicalSupportId(String userId) {
+    return _mockUsers.any(
+      (user) => user['id'] == userId && user['role'] == 'technical_support',
+    );
   }
 
   Future<Map<String, dynamic>> login(String email, String password) async {

@@ -5,7 +5,7 @@ import '../../routes/app_routes.dart';
 
 class AuthController extends GetxController {
   final _authService = Get.find<AuthService>();
-  
+
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
   final nameCtrl = TextEditingController();
@@ -29,10 +29,13 @@ class AuthController extends GetxController {
       if (result['success']) {
         Get.offAllNamed(Routes.dashboard);
       } else {
-        Get.snackbar('Login Gagal', result['message'],
-            backgroundColor: Colors.red[100],
-            colorText: Colors.red[900],
-            snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar(
+          'Login Gagal',
+          result['message'],
+          backgroundColor: Colors.red[100],
+          colorText: Colors.red[900],
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
     } finally {
       isLoading.value = false;
@@ -42,10 +45,13 @@ class AuthController extends GetxController {
   Future<void> register() async {
     if (!registerFormKey.currentState!.validate()) return;
     if (passwordCtrl.text != confirmPasswordCtrl.text) {
-      Get.snackbar('Error', 'Password tidak cocok',
-          backgroundColor: Colors.red[100],
-          colorText: Colors.red[900],
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        'Error',
+        'Password tidak cocok',
+        backgroundColor: Colors.red[100],
+        colorText: Colors.red[900],
+        snackPosition: SnackPosition.BOTTOM,
+      );
       return;
     }
     isLoading.value = true;
@@ -56,16 +62,22 @@ class AuthController extends GetxController {
         passwordCtrl.text,
       );
       if (result['success']) {
-        Get.snackbar('Berhasil', result['message'],
-            backgroundColor: Colors.green[100],
-            colorText: Colors.green[900],
-            snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar(
+          'Berhasil',
+          result['message'],
+          backgroundColor: Colors.green[100],
+          colorText: Colors.green[900],
+          snackPosition: SnackPosition.BOTTOM,
+        );
         Get.offNamed(Routes.login);
       } else {
-        Get.snackbar('Gagal', result['message'],
-            backgroundColor: Colors.red[100],
-            colorText: Colors.red[900],
-            snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar(
+          'Gagal',
+          result['message'],
+          backgroundColor: Colors.red[100],
+          colorText: Colors.red[900],
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
     } finally {
       isLoading.value = false;

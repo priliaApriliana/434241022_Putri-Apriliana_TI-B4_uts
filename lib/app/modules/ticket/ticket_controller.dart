@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../../data/models/ticket_model.dart';
 import '../../data/services/auth_service.dart';
 import '../../data/services/ticket_service.dart';
@@ -41,8 +42,13 @@ class TicketController extends GetxController {
     try {
       final user = _authService.currentUser.value;
       final userId = user?.isUser == true ? user?.id : null;
-      final status = selectedFilter.value == 'all' ? null : selectedFilter.value;
-      tickets.value = await _ticketService.getTickets(userId: userId, status: status);
+      final status = selectedFilter.value == 'all'
+          ? null
+          : selectedFilter.value;
+      tickets.value = await _ticketService.getTickets(
+        userId: userId,
+        status: status,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -98,10 +104,13 @@ class TicketController extends GetxController {
       );
       Get.back();
       loadTickets();
-      Get.snackbar('Berhasil', 'Tiket berhasil dibuat',
-          backgroundColor: Colors.green[100],
-          colorText: Colors.green[900],
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        'Berhasil',
+        'Tiket berhasil dibuat',
+        backgroundColor: Colors.green[100],
+        colorText: Colors.green[900],
+        snackPosition: SnackPosition.BOTTOM,
+      );
       _clearForm();
     } finally {
       isSubmitting.value = false;
@@ -146,6 +155,44 @@ class TicketController extends GetxController {
     String assignedTo,
     String assignedToName,
   ) async {
+    final actor = _authService.currentUser.value;
+    if (actor == null) return;
+
+    final ticket = await _ticketService.getTicketById(ticketId);
+    if (ticket == null) return;
+
+    final isAdmin = actor.isAdmin;
+    final isHelpdesk = actor.role == 'helpdesk';
+
+    if (!isAdmin && !isHelpdesk) {
+      Get.snackbar(
+        'Akses Ditolak',
+        'Hanya helpdesk atau admin yang bisa assign tiket.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    if (!_authService.isTechnicalSupportId(assignedTo)) {
+      Get.snackbar(
+        'Akses Ditolak',
+        'Tiket hanya boleh di-assign ke Technical Support.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    if (!isAdmin &&
+        ticket.assignedTo != null &&
+        ticket.assignedTo != assignedTo) {
+      Get.snackbar(
+        'Akses Ditolak',
+        'Re-assign tiket hanya bisa dilakukan oleh admin.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
     isSubmitting.value = true;
     try {
       final success = await _ticketService.assignTicket(
@@ -156,23 +203,103 @@ class TicketController extends GetxController {
       if (!success) return;
       await loadTicketDetail(ticketId);
       loadTickets();
-      Get.snackbar('Berhasil', 'Tiket berhasil di-assign ke $assignedToName',
-          backgroundColor: Colors.green[100],
-          colorText: Colors.green[900],
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        'Berhasil',
+        'Tiket sedang ditangani technical support: $assignedToName',
+        backgroundColor: Colors.green[100],
+        colorText: Colors.green[900],
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isSubmitting.value = false;
+    }
+  }
+
+  Future<void> unassignTicket(String ticketId) async {
+    final actor = _authService.currentUser.value;
+    if (actor == null || !actor.isAdmin) {
+      Get.snackbar(
+        'Akses Ditolak',
+        'Hanya admin yang bisa membatalkan assign.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    isSubmitting.value = true;
+    try {
+      final success = await _ticketService.unassignTicket(ticketId);
+      if (!success) return;
+      await loadTicketDetail(ticketId);
+      loadTickets();
+      Get.snackbar(
+        'Berhasil',
+        'Assign dibatalkan. Tiket kembali ke status menunggu helpdesk.',
+        backgroundColor: Colors.green[100],
+        colorText: Colors.green[900],
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } finally {
       isSubmitting.value = false;
     }
   }
 
   Future<void> updateStatus(String ticketId, String status) async {
+    final actor = _authService.currentUser.value;
+    if (actor == null || !actor.isStaff) {
+      Get.snackbar(
+        'Akses Ditolak',
+        'Hanya staff yang bisa mengubah status.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    final ticket = await _ticketService.getTicketById(ticketId);
+    if (ticket == null) return;
+
+    final isAdmin = actor.isAdmin;
+    final isHelpdesk = actor.role == 'helpdesk';
+    final isTechnicalSupport = actor.isTechnicalSupport;
+
+    if (isTechnicalSupport &&
+        !(status == 'in_progress' || status == 'resolved')) {
+      Get.snackbar(
+        'Akses Ditolak',
+        'Technical Support hanya bisa set ke Diproses atau Selesai Teknis.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    if (isHelpdesk && status == 'open' && ticket.assignedTo != null) {
+      Get.snackbar(
+        'Akses Ditolak',
+        'Membatalkan assign hanya bisa dilakukan admin.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    if (!isAdmin && status == 'closed') {
+      Get.snackbar(
+        'Akses Ditolak',
+        'Menutup tiket hanya bisa dilakukan admin.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
     await _ticketService.updateTicketStatus(ticketId, status);
     await loadTicketDetail(ticketId);
     loadTickets();
-    Get.snackbar('Berhasil', 'Status tiket diperbarui',
-        backgroundColor: Colors.green[100],
-        colorText: Colors.green[900],
-        snackPosition: SnackPosition.BOTTOM);
+    Get.snackbar(
+      'Berhasil',
+      'Status tiket diperbarui',
+      backgroundColor: Colors.green[100],
+      colorText: Colors.green[900],
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
 
   void _clearForm() {
